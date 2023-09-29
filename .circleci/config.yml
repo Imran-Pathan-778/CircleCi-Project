@@ -1,18 +1,26 @@
 version: 2.1
-
 jobs:
-  install-nginx:
+  build:
     docker:
       - image: circleci/node:14  # Choose an appropriate Node.js version
     steps:
       - checkout  # Check out your code (assuming you're building a Node.js application)
-      - run:
-          name: Install Nginx
-          command: |
-            sudo apt-get update
-            sudo apt-get install -y nginx
+      # Add steps for building and testing your Node.js application
+
+  deploy-nginx:
+    docker:
+      - image: nginx:latest  # Use the official Nginx Docker image
+    steps:
+      - checkout  # Check out any Nginx configuration files or assets
       - run:
           name: Start Nginx
-          command: |
-            sudo systemctl start nginx
+          command: nginx -g "daemon off;"
 
+workflows:
+  version: 2
+  build-and-deploy:
+    jobs:
+      - build
+      - deploy-nginx:
+          requires:
+            - build
